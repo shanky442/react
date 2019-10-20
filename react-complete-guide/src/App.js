@@ -6,10 +6,11 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons : [
-      { name : 'ankur', age : 28 },
-      { name : 'sumit', age : 26 },
-      { name : 'vik', age : 20 }
-    ]
+      { id:'a1',name : 'ankur', age : 28 },
+      { id:'a2',name : 'sumit', age : 26 },
+      { id:'a3',name : 'vik', age : 20 }
+    ],
+    showPersons : false
   }
 
   switchNameHandler = () => {
@@ -24,7 +25,53 @@ class App extends Component {
       }
     );
   }
+
+  showNames = () => {
+    var status = this.state.showPersons;
+    this.setState({
+      showPersons:!status
+    })
+  }
+  
+  personDeleteHandler = (index) => {
+    //let persons = this.state.persons.slice;
+    const persons = [...this.state.persons];
+    persons.splice(index,1);
+    this.setState({persons:persons});
+  }
+    
+  changedHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p=> {
+      return p.id===id;
+    });
+    console.log(personIndex);
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+    person.name = event.target.value;
+    const persons = [...this.state.persons];
+    persons[personIndex]=person;
+    this.setState({
+      persons:persons
+    })
+  }
   render() {
+    let show = null;
+    let currStatus = this.state.showPersons;
+    if(currStatus) {
+       show = (<div>
+         {
+           this.state.persons.map((person,index) => 
+           { return <Person 
+              click={() => this.personDeleteHandler(index)}
+              name={person.name} 
+              age={person.age}
+              key={person.id}
+              changed={(event)=>this.changedHandler(event, person.id)}/>
+            })
+         }
+        </div>)
+    }
     return (
       <div className="App">
         <header className="App-header">
@@ -35,9 +82,8 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <button onClick={this.switchNameHandler}>Switch Name</button>
-        <Person name={this.state.persons[0].name} age={this.state.persons[0].age}>Hobbies : chit chat</Person>
-        <Person name={this.state.persons[1].name} age={this.state.persons[1].age}>Hobbies : chit chat</Person>
-        <Person name={this.state.persons[2].name} age={this.state.persons[2].age}>Hobbies : chit chat</Person>
+        <button onClick={this.showNames}>Toggle show hide</button>
+        {show}
       </div>
     );
   }
