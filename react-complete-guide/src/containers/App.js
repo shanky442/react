@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+
 import './App.css';
 import Radium from 'radium';
-import Person from './Person/Person';
+import Persons from '../Components/Persons/Persons';
+import Cockpit from '../Components/Cockpit/Cockpit';
 
 class App extends Component {
   state = {
@@ -60,30 +61,13 @@ class App extends Component {
     let show = null;
     let currStatus = this.state.showPersons;
     if(currStatus) {
-       show = (<div>
-         {
-           this.state.persons.map((person,index) => 
-           { return <Person 
-              click={() => this.personDeleteHandler(index)}
-              name={person.name} 
-              age={person.age}
-              key={person.id}
-              changed={(event)=>this.changedHandler(event, person.id)}/>
-            })
-         }
-        </div>)
+       show = (
+           <Persons persons={this.state.persons} clicked={this.personDeleteHandler} changed={this.changedHandler}/>
+        )
     }
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <button onClick={this.switchNameHandler}>Switch Name</button>
-        <button onClick={this.showNames}>Toggle show hide</button>
+        <Cockpit switchNameHandler={this.switchNameHandler} showNames={this.showNames}/>
         {show}
       </div>
     );
